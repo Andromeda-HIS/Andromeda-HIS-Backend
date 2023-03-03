@@ -22,5 +22,5 @@ from source import urls as source_urls
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api-auth/',include('rest_framework.urls')),
-    path('source/',include(source_urls)),
+    path('login/',include(source_urls)),
 ]
