@@ -11,7 +11,8 @@ class AdminApiView(APIView):
 
     # 1. List all
     def get(self, request, *args, **kwargs):
-        admins = Admin.objects.filter(admin_id=request.GET.get('admin_id'))
+        # admins = Admin.objects.filter(admin_id=request.GET.get('admin_id'))
+        admins = Admin.objects
         serializer = AdminSerializer(admins, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
