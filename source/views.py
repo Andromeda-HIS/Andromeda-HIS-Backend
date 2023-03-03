@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
-from .models import Admin
+from .models import *
 from .serializers import AdminSerializer
 
 class LoginApiView(APIView):
@@ -23,23 +23,64 @@ class LoginApiView(APIView):
         error_message=""
         if(data['designation']=='Admin'):
             admins = Admin.objects.filter(admin_username=data['userName'])
-            # print(admins)
             if admins.exists():
                 admin=admins.first()
-                # print(type(admin))
                 if(getattr(admin,'admin_password')==data['password']):
-                    # print(getattr(admin,'admin_password'))
                     success=True
                 else:
                     success=False
                     error_message="Incorrect password"
-                    # serializer = AdminSerializer(admin)
             else:
                 success=False
                 error_message="Incorrect username"
-
             response={'success':success,'errorMessage':error_message}
             return Response(response,status=status.HTTP_200_OK)
+        
+        elif(data['designation']=='Clerk'):
+            deos = Data_Entry_Operator.objects.filter(deo_username=data['userName'])
+            if deos.exists():
+                deo=deos.first()
+                if(getattr(deo,'deo_password')==data['password']):
+                    success=True
+                else:
+                    success=False
+                    error_message="Incorrect password"
+            else:
+                success=False
+                error_message="Incorrect username"
+            response={'success':success,'errorMessage':error_message}
+            return Response(response,status=status.HTTP_200_OK)
+
+        elif(data['designation']=='Doctor'):
+            doctors = Doctor.objects.filter(doctor_username=data['userName'])
+            if doctors.exists():
+                doctor=doctors.first()
+                if(getattr(doctor,'doctor_password')==data['password']):
+                    success=True
+                else:
+                    success=False
+                    error_message="Incorrect password"
+            else:
+                success=False
+                error_message="Incorrect username"
+            response={'success':success,'errorMessage':error_message}
+            return Response(response,status=status.HTTP_200_OK)
+
+        elif(data['designation']=='Receptionist'):
+            fdos = Front_Desk_Operator.objects.filter(fdo_username=data['userName'])
+            if fdos.exists():
+                fdo=fdos.first()
+                if(getattr(fdo,'fdo_password')==data['password']):
+                    success=True
+                else:
+                    success=False
+                    error_message="Incorrect password"
+            else:
+                success=False
+                error_message="Incorrect username"
+            response={'success':success,'errorMessage':error_message}
+            return Response(response,status=status.HTTP_200_OK)
+    
         return Response("Other type entered", status=status.HTTP_400_BAD_REQUEST)
     # 2. Create
     def post(self, request, *args, **kwargs):
