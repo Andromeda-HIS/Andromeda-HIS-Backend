@@ -22,10 +22,10 @@ class LoginApiView(APIView):
         success=False
         error_message=""
         if(data['designation']=='Admin'):
-            admins = Admin.objects.filter(admin_username=data['userName'])
-            if admins.exists():
-                admin=admins.first()
-                if(getattr(admin,'admin_password')==data['password']):
+            admins = Admin.objects.raw("SELECT * FROM Admin WHERE admin_username=%s",[data['userName']])
+            if len(admins)>0:
+                admin=admins[0]
+                if(admin.admin_password==data['password']):
                     success=True
                 else:
                     success=False
@@ -37,10 +37,10 @@ class LoginApiView(APIView):
             return Response(response,status=status.HTTP_200_OK)
         
         elif(data['designation']=='Clerk'):
-            deos = Data_Entry_Operator.objects.filter(deo_username=data['userName'])
-            if deos.exists():
-                deo=deos.first()
-                if(getattr(deo,'deo_password')==data['password']):
+            deos = Data_Entry_Operator.objects.raw("SELECT * FROM Data_Entry_Operator WHERE deo_username=%s",[data['userName']])
+            if len(deos)>0:
+                deo=deos[0]
+                if(deo.deo_password==data['password']):
                     success=True
                 else:
                     success=False
@@ -52,10 +52,10 @@ class LoginApiView(APIView):
             return Response(response,status=status.HTTP_200_OK)
 
         elif(data['designation']=='Doctor'):
-            doctors = Doctor.objects.filter(doctor_username=data['userName'])
-            if doctors.exists():
-                doctor=doctors.first()
-                if(getattr(doctor,'doctor_password')==data['password']):
+            doctors = Doctor.objects.raw("SELECT * FROM Doctor WHERE doctor_username=%s",[data['userName']])
+            if len(doctors)>0:
+                doctor=doctors[0]
+                if(doctor.doctor_password==data['password']):
                     success=True
                 else:
                     success=False
@@ -67,10 +67,10 @@ class LoginApiView(APIView):
             return Response(response,status=status.HTTP_200_OK)
 
         elif(data['designation']=='Receptionist'):
-            fdos = Front_Desk_Operator.objects.filter(fdo_username=data['userName'])
-            if fdos.exists():
-                fdo=fdos.first()
-                if(getattr(fdo,'fdo_password')==data['password']):
+            fdos = Front_Desk_Operator.objects.raw("SELECT * FROM Front_Desk_Operator WHERE fdo_username=%s",[data['userName']])
+            if len(fdos)>0:
+                fdo=fdos[0]
+                if(fdo.fdo_password==data['password']):
                     success=True
                 else:
                     success=False
@@ -80,20 +80,27 @@ class LoginApiView(APIView):
                 error_message="Incorrect username"
             response={'success':success,'errorMessage':error_message}
             return Response(response,status=status.HTTP_200_OK)
-    
-        return Response("Other type entered", status=status.HTTP_400_BAD_REQUEST)
+        else:
+            success=False
+            error_message="Other type of user entered"
+            response={'success':success,'errorMessage':error_message}
+            return Response( status=status.HTTP_400_BAD_REQUEST)
     # 2. Create
-    def post(self, request, *args, **kwargs):
-        data = { 
-            'admin_username': request.data.get('admin_username'), 
-            'admin_password': request.data.get('admin_password')
-        }
-        serializer = AdminSerializer(data=data)
-        if serializer.is_valid():
-            if not Admin.objects.filter(admin_username=data['admin_username']).exists():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response("Username already exists", status=status.HTTP_400_BAD_REQUEST)
+# class Register(APIView):
+#     def post(self, request, *args, **kwargs):
+#         success=False
+#         error_message=""
+#         if(request.data.get('designation')=='Admin'):
+#         data = { 
+#             'admin_username': request.data.get('admin_username'), 
+#             'admin_password': request.data.get('admin_password')
+#         }
+#         serializer = AdminSerializer(data=data)
+#         if serializer.is_valid():
+#             if not Admin.objects.filter(admin_username=data['admin_username']).exists():
+#                 serializer.save()
+#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+#             else:
+#                 return Response("Username already exists", status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
