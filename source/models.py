@@ -55,6 +55,7 @@ class Admitted(models.Model):
     admission_id=models.AutoField(primary_key=True)
     patient_id=models.IntegerField()
     room_id=models.IntegerField()
+    currently_admitted=models.BooleanField()
     class Meta:
         db_table='Admitted'
 

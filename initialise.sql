@@ -24,9 +24,9 @@ INSERT INTO `Front_Desk_Operator` VALUES('james', 'jamesmax', 'James Maxwell', '
 
 INSERT INTO `Data_Entry_Operator` VALUES('richard', 'richardfey', 'Richard Feynman', 'House 13, Rich Street, Madagascar', 0, 2);
 
-INSERT INTO `Admitted` VALUES(0, 101, 201);
-INSERT INTO `Admitted` VALUES(0, 103, 202);
-INSERT INTO `Admitted` VALUES(0, 104, 203);
+INSERT INTO `Admitted` VALUES(0, 1, 4,True);
+INSERT INTO `Admitted` VALUES(0, 2, 2,True);
+INSERT INTO `Admitted` VALUES(0, 3, 1,True);
 
 INSERT INTO `Appointment` VALUES(0, 101, 501, '2023-03-02');
 INSERT INTO `Appointment` VALUES(0, 103, 502, '2023-03-03');

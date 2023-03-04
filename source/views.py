@@ -237,3 +237,117 @@ class Admin_Functions(APIView):
             error_message="Other type of user entered"
             response={'success':success,'errorMessage':error_message}
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+class Receptionist_Functions(APIView):
+    def post(self, request, *args, **kwargs):
+        success=False
+        error_message=""
+        if(kwargs['method']=='register'):
+            data = { 
+                'patient_id':0,
+                'patient_name': request.data.get('name'), 
+                'patient_address': request.data.get('address'),
+                'admitted':False
+            }
+            serializer = PatientSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                success=True
+                response={'success':success,'errorMessage':error_message}  
+                return Response(response, status=status.HTTP_201_CREATED)
+            else:
+                success=False
+                error_message="Unable to register patient"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            
+        elif(kwargs['method']=='admit'):
+            data={
+                'admission_id':0,
+                'patient_id':request.data.get('patient_id'),
+                'room_id':request.data.get('room_id'),
+                'currently_admitted':False
+            }
+            if(len(Patient.objects.raw('SELECT * FROM Patient WHERE patient_id=%s',[data['patient_id']]))==0):
+                success=False
+                error_message="No such patient found"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            
+            if(len(Room.objects.raw('SELECT * FROM Room WHERE room_id=%s',[data['room_id']]))==0):
+                success=False
+                error_message="No such room found"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+            patients = Patient.objects.raw('SELECT * FROM Patient WHERE patient_id=%s',[data['patient_id']])
+            patient=patients[0]
+            if(patient.admitted==True):
+                success=False
+                error_message="Patient already admitted"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+            rooms = Room.objects.raw('SELECT * FROM Room WHERE room_id=%s',[data['room_id']])
+            room=rooms[0]
+            if(room.availability==False):
+                success=False
+                error_message="Room already occupied"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+    
+            data['currently_admitted']=True
+            serializer = AdmittedSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                with connection.cursor() as cursor:
+                    cursor.execute("UPDATE Patient SET admitted=True WHERE patient_id=%s", [data['patient_id']])
+                    cursor.execute("UPDATE Room SET availability=False WHERE room_id=%s", [data['room_id']])
+                    success=True  
+                    response={'success':success,'errorMessage':error_message}  
+                return Response(response, status=status.HTTP_201_CREATED)
+            else:
+                success=False
+                error_message="Unable to admit patient"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+        else:
+            success=False
+            error_message="Wrong request sent for Receptionist"
+            response={'success':success,'errorMessage':error_message}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, *args, **kwargs):
+        success=False
+        error_message=""
+        if(kwargs['method']=='discharge'):
+            patients=Patient.objects.raw('SELECT * FROM Patient WHERE patient_id=%s',[request.GET.get('patient_id')])
+            if(len(patients)==0):
+                success=False
+                error_message="No such patient found"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            
+            patient=patients[0]
+            if(patient.admitted==False):
+                success=False
+                error_message="Patient not admitted"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            
+            with connection.cursor() as cursor:
+                admission=Admitted.objects.raw('SELECT * FROM Admitted WHERE patient_id=%s AND currently_admitted=True',[request.GET.get('patient_id')])
+                cursor.execute("UPDATE Admitted SET currently_admitted=False WHERE admission_id=%s", [admission[0].admission_id])
+                cursor.execute("UPDATE Patient SET admitted=False WHERE patient_id=%s",[request.GET.get('patient_id')])
+                cursor.execute("UPDATE Room SET availability=True WHERE room_id=%s",[admission[0].room_id])
+                success=True
+                error_message="Successfully discharged patient"
+                response={'success':success,'errorMessage':error_message}
+            return Response(response,status=status.HTTP_200_OK)
+
+        else:
+            success=False
+            error_message="Wrong request sent for Receptionist"
+            response={'success':success,'errorMessage':error_message}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
