@@ -28,17 +28,17 @@ INSERT INTO `Admitted` VALUES(0, 1, 4,True);
 INSERT INTO `Admitted` VALUES(0, 2, 2,True);
 INSERT INTO `Admitted` VALUES(0, 3, 1,True);
 
-INSERT INTO `Appointment` VALUES(0, 101, 501, '2023-03-02');
-INSERT INTO `Appointment` VALUES(0, 103, 502, '2023-03-03');
-INSERT INTO `Appointment` VALUES(0, 104, 503, '2023-03-04');
-INSERT INTO `Appointment` VALUES(0, 104, 504, '2023-03-05');
+INSERT INTO `Appointment` VALUES(0, 1, 1, '2023-03-02');
+INSERT INTO `Appointment` VALUES(0, 2, 2, '2023-03-03');
+INSERT INTO `Appointment` VALUES(0, 3, 3, '2023-03-04');
+INSERT INTO `Appointment` VALUES(0, 4, 4, '2023-03-05');
 
 INSERT INTO `Procedure` VALUES(0, 'X-Ray', 4000);
 INSERT INTO `Procedure` VALUES(0, 'CT-Scan', 2000);
 INSERT INTO `Procedure` VALUES(0, 'Chemotherapy', 10000);
 INSERT INTO `Procedure` VALUES(0, 'MRI', 1000);
 
-INSERT INTO `Treatment` VALUES(0, 101, 501, 2501);
-INSERT INTO `Treatment` VALUES(0, 103, 502, 2502);
-INSERT INTO `Treatment` VALUES(0, 104, 503, 2503);
-INSERT INTO `Treatment` VALUES(0, 104, 504, 2504);
+INSERT INTO `Treatment` VALUES(0, 1, 1, 1);
+INSERT INTO `Treatment` VALUES(0, 2, 2, 2);
+INSERT INTO `Treatment` VALUES(0, 3, 3, 3);
+INSERT INTO `Treatment` VALUES(0, 4, 4, 4);

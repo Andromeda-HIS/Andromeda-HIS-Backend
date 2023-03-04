@@ -35,6 +35,9 @@ class Front_Desk_Operator(models.Model):
     fdo_password=models.TextField()
     fdo_name=models.TextField()
     fdo_address=models.TextField()
+    registered_num=models.IntegerField()
+    admitted_num=models.IntegerField()
+    discharged_num=models.IntegerField()
     class Meta:
         db_table='Front_Desk_Operator'
 
@@ -43,6 +46,8 @@ class Data_Entry_Operator(models.Model):
     deo_password=models.TextField()
     deo_name=models.TextField()
     deo_address=models.TextField()
+    tests_scheduled=models.IntegerField()
+    treatments_scheduled=models.IntegerField()
     class Meta:
         db_table='Data_Entry_Operator'
 
@@ -50,7 +55,6 @@ class Admitted(models.Model):
     admission_id=models.AutoField(primary_key=True)
     patient_id=models.IntegerField()
     room_id=models.IntegerField()
-    currently_admitted=models.BooleanField()
     class Meta:
         db_table='Admitted'
 
@@ -59,6 +63,7 @@ class Appointment(models.Model):
     patient_id=models.IntegerField()
     doctor_id=models.IntegerField()
     date=models.DateField()
+    symptoms=models.CharField(max_length=200)
     class Meta:
         db_table='Appointment'
         constraints=[
@@ -66,8 +71,7 @@ class Appointment(models.Model):
         ]
 
 class Procedure(models.Model):
-    procedure_id=models.AutoField(primary_key=True)
-    procedure_name=models.TextField()
+    procedure_name=models.TextField(max_length=100,primary_key=True)
     cost=models.IntegerField()
     class Meta:
         db_table='Procedure'
@@ -76,8 +80,18 @@ class Treatment(models.Model):
     treatment_id=models.AutoField(primary_key=True)
     patient_id=models.IntegerField()
     doctor_id=models.IntegerField()
-    procedure_id=models.IntegerField()
+    prescription=models.CharField(max_length=100)
+    appointment_id=models.IntegerField()
     class Meta:
         db_table='Treatment'
 
+class Test(models.Model):
+    test_id=models.AutoField(primary_key=True)
+    patient_id=models.IntegerField()
+    doctor_id=models.IntegerField()
+    procedure_name=models.CharField(max_length=100)
+    appointment_id=models.IntegerField()
+    class Meta:
+        db_table='Test'
 
+# added test, added symptoms in appointment, changed treatment

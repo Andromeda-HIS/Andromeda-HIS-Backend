@@ -232,7 +232,7 @@ class Admin_Functions(APIView):
             error_message="Other type of user entered"
             response={'success':success,'errorMessage':error_message}
             return Response(response,status=status.HTTP_200_OK)
-        
+
 class Receptionist_Functions(APIView):
     def get(self, request, *args, **kwargs):
         success=False
@@ -249,7 +249,7 @@ class Receptionist_Functions(APIView):
             data=[]
             response={'success':success,'errorMessage':error_message,'data':data}  
             return Response(response,status=status.HTTP_200_OK)
-            
+
     def post(self, request, *args, **kwargs):
         success=False
         error_message=""
@@ -363,4 +363,62 @@ class Receptionist_Functions(APIView):
             response={'success':success,'errorMessage':error_message}
             return Response(response,status=status.HTTP_200_OK)
         
+class Doctor_Functions(APIView):
+    def get(self, request, *args, **kwargs):
+        success=False
+        error_message=""
 
+        # Sending all patients
+        # method = all_patients,
+        # "doctor_id" from frontend
+
+        if(kwargs['method']=='all_patients'):
+            patients=Patient.objects.raw('SELECT * FROM Patient WHERE EXISTS (SELECT * FROM Treatment WHERE Treatment.patient_id = Patient.patient_id AND Treatment.doctor_id = %s)', [request.GET.get('doctor_id')])
+            data=[(row.patient_id,row.patient_name) for row in patients]
+            success=True
+            error_message=""
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+        
+        # Sending specific patient
+        # method = patient
+        # "patient_id" and "doctor_id" from frontend
+
+        elif(kwargs['method']=='patient'):
+            patients = Patient.objects.raw('SELECT * FROM Patient WHERE patient_id=%s',[request.GET.get('patient_id')])
+            if(len(patients) == 0):
+                success=False
+                error_message="No such patient found"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response,status=status.HTTP_200_OK)
+            success=True
+            error_message=""
+            patient=patients[0]
+            room="NA"
+            rooms = Admitted.objects.raw('SELECT * from Admitted WHERE patient_id=%s AND currently_admitted=True',[request.GET.get('patient_id')])
+            if(len(rooms) > 0):
+                room = rooms[0].room_id
+            treatments_data = Treatment.objects.raw('SELECT * FROM Treatment WHERE patient_id=%s AND doctor_id=%s', [request.GET.get('patient_id')], [request.GET.get('doctor_id')])
+            treatments = [(row.treatment_id, row.procedure_id) for row in treatments_data]
+            response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments}
+            return Response(response,status=status.HTTP_200_OK)
+
+        else:
+            success=False
+            error_message="Wrong request sent for Doctor"
+            data=[]
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+        
+    #############################################
+    ############# TO BE COMPLETED ###############
+    #############################################
+
+    # def post(self, request, *args, **kwargs):
+    #     success=False
+    #     error_message=""
+
+    #     # "appointment_id" from frontend
+    #     # "treatment
+
+    #     if(kwargs['method']=='appointment'):
