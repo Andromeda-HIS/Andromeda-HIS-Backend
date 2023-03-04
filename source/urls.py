@@ -2,8 +2,10 @@
 from django.urls import path, include
 from .views import (
     LoginApiView,
+    Admin_Functions,
 )
 
 urlpatterns = [
-    path('',LoginApiView.as_view()),
+    path('login/',LoginApiView.as_view()),
+    path('admin/',Admin_Functions.as_view()),
 ]
