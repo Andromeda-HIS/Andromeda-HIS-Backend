@@ -234,6 +234,22 @@ class Admin_Functions(APIView):
             return Response(response,status=status.HTTP_200_OK)
         
 class Receptionist_Functions(APIView):
+    def get(self, request, *args, **kwargs):
+        success=False
+        error_message=""
+        if(kwargs['method']=='rooms'):
+            rooms=Room.objects.raw('SELECT * FROM Room')
+            data=[(row.room_id,row.availability) for row in rooms]
+            success=True
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+        else:
+            success=False
+            error_message="Wrong request sent for Receptionist"
+            data=[]
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+            
     def post(self, request, *args, **kwargs):
         success=False
         error_message=""

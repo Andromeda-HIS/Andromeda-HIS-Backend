@@ -30,3 +30,8 @@ class AdmittedSerializer(serializers.ModelSerializer):
     class Meta:
         model=Admitted
         fields=['admission_id','patient_id','room_id','currently_admitted']
+
+class RoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Room
+        fields=['room_id','availability']
