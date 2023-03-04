@@ -137,8 +137,8 @@ class Admin_Functions(APIView):
                 'deo_password': request.data.get('password'),
                 'deo_name':request.data.get('name'),
                 'deo_address':request.data.get('address'),
-                'tests_scheduled':request.data.get('tests_scheduled'),
-                'treatments_scheduled':request.data.get('treatments_scheduled')
+                'tests_scheduled':0,
+                'treatments_scheduled':0
             }
             serializer = Data_Entry_Operator_Serializer(data=data)
             if serializer.is_valid():
@@ -158,9 +158,9 @@ class Admin_Functions(APIView):
                 'fdo_password': request.data.get('password'),
                 'fdo_name':request.data.get('name'),
                 'fdo_address':request.data.get('address'),
-                'registered_num':request.data.get('registered_num'),
-                'admitted_num':request.data.get('admitted_num'),
-                'discharged_num':request.data.get('discharged_num')
+                'registered_num':0,
+                'admitted_num':0,
+                'discharged_num':0
             }
             serializer = Front_Desk_Operator_Serializer(data=data)
             if serializer.is_valid():
@@ -351,3 +351,5 @@ class Receptionist_Functions(APIView):
             error_message="Wrong request sent for Receptionist"
             response={'success':success,'errorMessage':error_message}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+
