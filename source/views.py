@@ -85,7 +85,7 @@ class LoginApiView(APIView):
             success=False
             error_message="Other type of user entered"
             response={'success':success,'errorMessage':error_message}
-            return Response(response,status=status.HTTP_400_BAD_REQUEST)
+            return Response(response,status=status.HTTP_200_OK)
     # 2. Create
 class Admin_Functions(APIView):
     def post(self, request, *args, **kwargs):
@@ -111,7 +111,7 @@ class Admin_Functions(APIView):
                 success=False
                 error_message="The username already exists"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
         
         elif(request.data.get('designation')=='Doctor'):
             data = { 
@@ -136,9 +136,7 @@ class Admin_Functions(APIView):
                 'deo_username': request.data.get('username'), 
                 'deo_password': request.data.get('password'),
                 'deo_name':request.data.get('name'),
-                'deo_address':request.data.get('address'),
-                'tests_scheduled':0,
-                'treatments_scheduled':0
+                'deo_address':request.data.get('address')
             }
             serializer = Data_Entry_Operator_Serializer(data=data)
             if serializer.is_valid():
@@ -150,17 +148,14 @@ class Admin_Functions(APIView):
                 success=False
                 error_message="The username already exists"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
                
         elif(request.data.get('designation')=='Receptionist'):
             data = { 
                 'fdo_username': request.data.get('username'), 
                 'fdo_password': request.data.get('password'),
                 'fdo_name':request.data.get('name'),
-                'fdo_address':request.data.get('address'),
-                'registered_num':0,
-                'admitted_num':0,
-                'discharged_num':0
+                'fdo_address':request.data.get('address')
             }
             serializer = Front_Desk_Operator_Serializer(data=data)
             if serializer.is_valid():
@@ -172,12 +167,12 @@ class Admin_Functions(APIView):
                 success=False
                 error_message="The username already exists"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
         else:
             success=False
             error_message="Other type of user entered"
             response={'success':success,'errorMessage':error_message}
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(response,status=status.HTTP_200_OK)
     
     def delete(self, request, *args, **kwargs):
         success=False
@@ -236,7 +231,7 @@ class Admin_Functions(APIView):
             success=False
             error_message="Other type of user entered"
             response={'success':success,'errorMessage':error_message}
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(response,status=status.HTTP_200_OK)
         
 class Receptionist_Functions(APIView):
     def post(self, request, *args, **kwargs):
@@ -259,7 +254,7 @@ class Receptionist_Functions(APIView):
                 success=False
                 error_message="Unable to register patient"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
             
         elif(kwargs['method']=='admit'):
             data={
@@ -272,13 +267,13 @@ class Receptionist_Functions(APIView):
                 success=False
                 error_message="No such patient found"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
             
             if(len(Room.objects.raw('SELECT * FROM Room WHERE room_id=%s',[data['room_id']]))==0):
                 success=False
                 error_message="No such room found"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
 
             patients = Patient.objects.raw('SELECT * FROM Patient WHERE patient_id=%s',[data['patient_id']])
             patient=patients[0]
@@ -286,7 +281,7 @@ class Receptionist_Functions(APIView):
                 success=False
                 error_message="Patient already admitted"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
         
             rooms = Room.objects.raw('SELECT * FROM Room WHERE room_id=%s',[data['room_id']])
             room=rooms[0]
@@ -294,7 +289,7 @@ class Receptionist_Functions(APIView):
                 success=False
                 error_message="Room already occupied"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
     
             data['currently_admitted']=True
             serializer = AdmittedSerializer(data=data)
@@ -310,13 +305,13 @@ class Receptionist_Functions(APIView):
                 success=False
                 error_message="Unable to admit patient"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
         
         else:
             success=False
             error_message="Wrong request sent for Receptionist"
             response={'success':success,'errorMessage':error_message}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response,status=status.HTTP_200_OK)
         
     def delete(self, request, *args, **kwargs):
         success=False
@@ -327,14 +322,14 @@ class Receptionist_Functions(APIView):
                 success=False
                 error_message="No such patient found"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response,status=status.HTTP_200_OK)
             
             patient=patients[0]
             if(patient.admitted==False):
                 success=False
                 error_message="Patient not admitted"
                 response={'success':success,'errorMessage':error_message}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response,status=status.HTTP_200_OK)
             
             with connection.cursor() as cursor:
                 admission=Admitted.objects.raw('SELECT * FROM Admitted WHERE patient_id=%s AND currently_admitted=True',[request.GET.get('patient_id')])
@@ -350,6 +345,6 @@ class Receptionist_Functions(APIView):
             success=False
             error_message="Wrong request sent for Receptionist"
             response={'success':success,'errorMessage':error_message}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response,status=status.HTTP_200_OK)
         
 

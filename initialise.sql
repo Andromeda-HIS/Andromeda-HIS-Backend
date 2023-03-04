@@ -19,10 +19,10 @@ INSERT INTO `Doctor` VALUES('stephen', 'stephenhawk', 'Stephen Hawking', 'House 
 INSERT INTO `Doctor` VALUES('nikola', 'nikolates', 'Nikola Tesla', 'House 1, Rali Street, Auckland', 'Oncology');
 INSERT INTO `Doctor` VALUES('thomas', 'thomased', 'Thomas Edison', 'House 9, Dali Street, Birmingham', 'Pathology');
 
-INSERT INTO `Front_Desk_Operator` VALUES('michael', 'michaelfar', 'Michael Faraday', 'House 2, Mion Street, Melbourne', 3, 3, 0);
-INSERT INTO `Front_Desk_Operator` VALUES('james', 'jamesmax', 'James Maxwell', 'House 22, Max Street, Adelaide', 1, 0, 0);
+INSERT INTO `Front_Desk_Operator` VALUES('michael', 'michaelfar', 'Michael Faraday', 'House 2, Mion Street, Melbourne');
+INSERT INTO `Front_Desk_Operator` VALUES('james', 'jamesmax', 'James Maxwell', 'House 22, Max Street, Adelaide');
 
-INSERT INTO `Data_Entry_Operator` VALUES('richard', 'richardfey', 'Richard Feynman', 'House 13, Rich Street, Madagascar', 0, 2);
+INSERT INTO `Data_Entry_Operator` VALUES('richard', 'richardfey', 'Richard Feynman', 'House 13, Rich Street, Madagascar');
 
 INSERT INTO `Admitted` VALUES(0, 1, 4,True);
 INSERT INTO `Admitted` VALUES(0, 2, 2,True);

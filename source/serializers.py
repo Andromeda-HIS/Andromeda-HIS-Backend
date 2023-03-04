@@ -14,12 +14,12 @@ class DoctorSerializer(serializers.ModelSerializer):
 class Data_Entry_Operator_Serializer(serializers.ModelSerializer):
     class Meta:
         model=Data_Entry_Operator
-        fields=['deo_username','deo_password','deo_name','deo_address','tests_scheduled','treatments_scheduled']
+        fields=['deo_username','deo_password','deo_name','deo_address']
 
 class Front_Desk_Operator_Serializer(serializers.ModelSerializer):
     class Meta:
         model=Front_Desk_Operator
-        fields=['fdo_username','fdo_password','fdo_name','fdo_address','registered_num','admitted_num','discharged_num']
+        fields=['fdo_username','fdo_password','fdo_name','fdo_address']
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
