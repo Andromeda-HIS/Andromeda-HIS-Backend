@@ -49,4 +49,4 @@ class TreatmentSerializer(serializers.ModelSerializer):
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model=Test
-        fields=['test_id','patient_id','doctor_username','procedure','appointment_id','saved_test','date']
+        fields=['test_id','patient_id','doctor_username','procedure_name','appointment_id','saved_test','date']
