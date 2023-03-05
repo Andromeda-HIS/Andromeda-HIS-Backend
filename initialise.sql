@@ -1,17 +1,17 @@
 INSERT INTO `Admin` VALUES('Albert','hms');
 
-INSERT INTO `Patient` VALUES(0,'Marconi','C-33 Hall Street, Geneva, Switzerland', TRUE);
-INSERT INTO `Patient` VALUES(0,'Isaac','A-56 Beacon Street, Lucknow, India', FALSE);
-INSERT INTO `Patient` VALUES(0,'Charles','B-3, Berlington Street, New York, USA', TRUE);
-INSERT INTO `Patient` VALUES(0,'Marie','D-12 Hill Street, Kolkata, India', TRUE);
+INSERT INTO `Patient` VALUES(0,'Marconi','C-33 Hall Street, Geneva, Switzerland', True);
+INSERT INTO `Patient` VALUES(0,'Isaac','A-56 Beacon Street, Lucknow, India', False);
+INSERT INTO `Patient` VALUES(0,'Charles','B-3, Berlington Street, New York, USA', True);
+INSERT INTO `Patient` VALUES(0,'Marie','D-12 Hill Street, Kolkata, India', True);
 
-INSERT INTO `Room` VALUES(0, FALSE);
-INSERT INTO `Room` VALUES(0, FALSE);
-INSERT INTO `Room` VALUES(0, FALSE);
-INSERT INTO `Room` VALUES(0, TRUE);
-INSERT INTO `Room` VALUES(0, TRUE);
-INSERT INTO `Room` VALUES(0, TRUE);
-INSERT INTO `Room` VALUES(0, TRUE);
+INSERT INTO `Room` VALUES(0, False);
+INSERT INTO `Room` VALUES(0, False);
+INSERT INTO `Room` VALUES(0, True);
+INSERT INTO `Room` VALUES(0, False);
+INSERT INTO `Room` VALUES(0, True);
+INSERT INTO `Room` VALUES(0, True);
+INSERT INTO `Room` VALUES(0, True);
 
 INSERT INTO `Doctor` VALUES('galileo', 'galileogal', 'Galileo Galilei', 'House 34, Gali Street, Capetown', 'Neurology');
 INSERT INTO `Doctor` VALUES('stephen', 'stephenhawk', 'Stephen Hawking', 'House 55, Hari Street, Wellington', 'Cardiology');
@@ -27,10 +27,10 @@ INSERT INTO `Admitted` VALUES(0, 1, 4,True);
 INSERT INTO `Admitted` VALUES(0, 2, 2,True);
 INSERT INTO `Admitted` VALUES(0, 3, 1,True);
 
-INSERT INTO `Appointment` VALUES(0, 1, 'galileo', '2023-03-02', 'cough, sore throat', FALSE);
-INSERT INTO `Appointment` VALUES(0, 2, 'stephen', '2023-03-03', 'weakness, red-eyes, cough', FALSE);
-INSERT INTO `Appointment` VALUES(0, 3, 'nikola', '2023-03-04', 'fever, high blood pressure', FALSE);
-INSERT INTO `Appointment` VALUES(0, 4, 'thomas', '2023-03-05', 'muscular cramps', FALSE);
+INSERT INTO `Appointment` VALUES(0, 1, 'galileo', '2023-03-02', 'cough, sore throat', False);
+INSERT INTO `Appointment` VALUES(0, 2, 'stephen', '2023-03-03', 'weakness, red-eyes, cough', False);
+INSERT INTO `Appointment` VALUES(0, 3, 'nikola', '2023-03-04', 'fever, high blood pressure', False);
+INSERT INTO `Appointment` VALUES(0, 4, 'thomas', '2023-03-05', 'muscular cramps', False);
  
 INSERT INTO `Procedure` VALUES('X-Ray', 4000);
 INSERT INTO `Procedure` VALUES('CT-Scan', 2000);
