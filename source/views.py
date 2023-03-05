@@ -527,7 +527,7 @@ class Doctor_Functions(APIView):
         # "doctor_username" from frontend
 
         elif(kwargs['method']=='all_appointments'):
-            appointments=Appointment.objects.raw('SELECT * FROM Appointment WHERE doctor_username=%s AND completed=False', [request.GET.get('doctor_username')])
+            appointments=Appointment.objects.raw('SELECT * FROM Appointment WHERE doctor_username=%s AND completed=False ORDER BY date ASC', [request.GET.get('doctor_username')])
             data=[(row.appointment_id,row.patient_id,row.date) for row in appointments]
             success=True
             error_message=""
