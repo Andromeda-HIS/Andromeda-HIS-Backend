@@ -566,9 +566,7 @@ class Doctor_Functions(APIView):
             }
 
             serializerTreatment = TreatmentSerializer(data=dataTreatment)
-            if serializerTreatment.is_valid():
-                serializerTreatment.save()
-            else:
+            if not serializerTreatment.is_valid():
                 success=False
                 error_message="Unable to register treatment"
                 response={'success':success,'errorMessage':error_message}
@@ -576,7 +574,10 @@ class Doctor_Functions(APIView):
 
             serializer = TestSerializer(data=dataTest)
             if serializer.is_valid():
-                serializer.save()
+                if not dataTest['procedure_name'] == "":
+                    serializer.save()
+                if not dataTreatment['prescription'] == "":
+                    serializerTreatment.save()
                 with connection.cursor() as cursor:
                     cursor.execute("UPDATE Appointment SET completed=True WHERE appointment_id=%s", [request.data.get('appointment_id')])
                     success=True

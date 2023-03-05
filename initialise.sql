@@ -37,12 +37,12 @@ INSERT INTO `Procedure` VALUES('CT-Scan', 2000);
 INSERT INTO `Procedure` VALUES('Chemotherapy', 10000);
 INSERT INTO `Procedure` VALUES('MRI', 1000);
 
-INSERT INTO `Treatment` VALUES(0, 1, 'galileo', '', 1, False,'2023-03-03');
-INSERT INTO `Treatment` VALUES(0, 2, 'stephen', '', 2, False,NULL);
-INSERT INTO `Treatment` VALUES(0, 3, 'nikola', '', 3, False,NULL);
-INSERT INTO `Treatment` VALUES(0, 4, 'thomas', '', 4, False,'2023-03-04');
+-- INSERT INTO `Treatment` VALUES(0, 1, 'galileo', '', 1, False,'2023-03-03');
+-- INSERT INTO `Treatment` VALUES(0, 2, 'stephen', '', 2, False,NULL);
+-- INSERT INTO `Treatment` VALUES(0, 3, 'nikola', '', 3, False,NULL);
+-- INSERT INTO `Treatment` VALUES(0, 4, 'thomas', '', 4, False,'2023-03-04');
 
-INSERT INTO `Test` VALUES(0, 1, 'galileo', '', 1, False,'2023-03-10');
-INSERT INTO `Test` VALUES(0, 2, 'stephen', '', 2, False,'2023-03-08');
-INSERT INTO `Test` VALUES(0, 3, 'nikola', '', 3, False,'2023-03-08');
-INSERT INTO `Test` VALUES(0, 4, 'thomas', '', 4, False,'2023-03-07');
+-- INSERT INTO `Test` VALUES(0, 1, 'galileo', '', 1, False,'2023-03-10');
+-- INSERT INTO `Test` VALUES(0, 2, 'stephen', '', 2, False,'2023-03-08');
+-- INSERT INTO `Test` VALUES(0, 3, 'nikola', '', 3, False,'2023-03-08');
+-- INSERT INTO `Test` VALUES(0, 4, 'thomas', '', 4, False,'2023-03-07');
