@@ -80,6 +80,7 @@ class Treatment(models.Model):
     prescription=models.CharField(max_length=200, null=True)
     appointment_id=models.IntegerField()
     saved_treatment=models.BooleanField()
+    date=models.DateField(null=True)
     class Meta:
         db_table='Treatment'
 
@@ -90,6 +91,7 @@ class Test(models.Model):
     procedure_name=models.CharField(max_length=100)
     appointment_id=models.IntegerField()
     saved_test=models.BooleanField()
+    date=models.DateField(null=True)
     class Meta:
         db_table='Test'
 

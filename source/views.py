@@ -214,7 +214,7 @@ class Admin_Functions(APIView):
                     error_message="No such user found"
                 response={'success':success,'errorMessage':error_message}
             return Response(response,status=status.HTTP_200_OK)
-        
+
         elif(designation=='Receptionist'):
             with connection.cursor() as cursor:
                 if(len(Front_Desk_Operator.objects.raw('SELECT * FROM Front_Desk_Operator WHERE fdo_username=%s',[request.GET.get('username')]))>0):
@@ -456,7 +456,7 @@ class Doctor_Functions(APIView):
                 error_message="Unable to register treatment"
                 response={'success':success,'errorMessage':error_message}
                 return Response(response, status=status.HTTP_200_OK)
-            
+
             serializer = TestSerializer(data=dataTest)
             if serializer.is_valid():
                 serializer.save()

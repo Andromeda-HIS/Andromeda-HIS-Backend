@@ -39,9 +39,9 @@ class RoomSerializer(serializers.ModelSerializer):
 class TreatmentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Treatment
-        fields=['treatment_id','patient_id','doctor_username','prescription','appointment_id','saved_treatment']
+        fields=['treatment_id','patient_id','doctor_username','prescription','appointment_id','saved_treatment', 'date']
 
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model=Test
-        fields=['test_id','patient_id','doctor_username','procedure_name','appointment_id','saved_test']
+        fields=['test_id','patient_id','doctor_username','procedure_name','appointment_id','saved_test', 'date']
