@@ -345,6 +345,12 @@ class Receptionist_Functions(APIView):
                 'symptoms':request.data.get('symptoms'),
                 'completed':False
             }
+            if(len(Patient.objects.raw('SELECT * FROM Patient WHERE patient_id=%s',[data['patient_id']]))==0):
+                success=False
+                error_message="Patient does not exist"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_200_OK)
+            
             current_appts=Appointment.objects.raw('SELECT * FROM Appointment WHERE doctor_username=%s AND date=%s',[data['doctor_username'],data['date']])
             if(len(current_appts)>=5):
                 success=False
