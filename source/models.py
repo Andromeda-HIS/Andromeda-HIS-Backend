@@ -57,17 +57,18 @@ class Admitted(models.Model):
 class Appointment(models.Model):
     appointment_id=models.AutoField(primary_key=True)
     patient_id=models.IntegerField()
-    doctor_id=models.IntegerField()
+    doctor_username=models.CharField(max_length=100)
     date=models.DateField()
+    symptoms=models.CharField(max_length=200)
+    completed=models.BooleanField()
     class Meta:
         db_table='Appointment'
         constraints=[
-            models.UniqueConstraint(fields=['patient_id','doctor_id','date'],name='appointment_pk')
+            models.UniqueConstraint(fields=['patient_id','doctor_username','date'],name='appointment_pk')
         ]
 
 class Procedure(models.Model):
-    procedure_id=models.AutoField(primary_key=True)
-    procedure_name=models.TextField()
+    procedure_name=models.CharField(max_length=100,primary_key=True)
     cost=models.IntegerField()
     class Meta:
         db_table='Procedure'
@@ -75,9 +76,21 @@ class Procedure(models.Model):
 class Treatment(models.Model):
     treatment_id=models.AutoField(primary_key=True)
     patient_id=models.IntegerField()
-    doctor_id=models.IntegerField()
-    procedure_id=models.IntegerField()
+    doctor_username=models.CharField(max_length=100)
+    prescription=models.CharField(max_length=200, null=True)
+    appointment_id=models.IntegerField()
+    saved_treatment=models.BooleanField()
+    date=models.DateField(null=True)
     class Meta:
         db_table='Treatment'
 
-
+class Test(models.Model):
+    test_id=models.AutoField(primary_key=True)
+    patient_id=models.IntegerField()
+    doctor_username=models.CharField(max_length=100)
+    procedure_name=models.CharField(max_length=100)
+    appointment_id=models.IntegerField()
+    saved_test=models.BooleanField()
+    date=models.DateField(null=True)
+    class Meta:
+        db_table='Test'

@@ -13,7 +13,6 @@ INSERT INTO `Room` VALUES(0, TRUE);
 INSERT INTO `Room` VALUES(0, TRUE);
 INSERT INTO `Room` VALUES(0, TRUE);
 
-
 INSERT INTO `Doctor` VALUES('galileo', 'galileogal', 'Galileo Galilei', 'House 34, Gali Street, Capetown', 'Neurology');
 INSERT INTO `Doctor` VALUES('stephen', 'stephenhawk', 'Stephen Hawking', 'House 55, Hari Street, Wellington', 'Cardiology');
 INSERT INTO `Doctor` VALUES('nikola', 'nikolates', 'Nikola Tesla', 'House 1, Rali Street, Auckland', 'Oncology');
@@ -28,17 +27,22 @@ INSERT INTO `Admitted` VALUES(0, 1, 4,True);
 INSERT INTO `Admitted` VALUES(0, 2, 2,True);
 INSERT INTO `Admitted` VALUES(0, 3, 1,True);
 
-INSERT INTO `Appointment` VALUES(0, 101, 501, '2023-03-02');
-INSERT INTO `Appointment` VALUES(0, 103, 502, '2023-03-03');
-INSERT INTO `Appointment` VALUES(0, 104, 503, '2023-03-04');
-INSERT INTO `Appointment` VALUES(0, 104, 504, '2023-03-05');
+INSERT INTO `Appointment` VALUES(0, 1, 'galileo', '2023-03-02', 'cough, sore throat', FALSE);
+INSERT INTO `Appointment` VALUES(0, 2, 'stephen', '2023-03-03', 'weakness, red-eyes, cough', FALSE);
+INSERT INTO `Appointment` VALUES(0, 3, 'nikola', '2023-03-04', 'fever, high blood pressure', FALSE);
+INSERT INTO `Appointment` VALUES(0, 4, 'thomas', '2023-03-05', 'muscular cramps', FALSE);
+ 
+INSERT INTO `Procedure` VALUES('X-Ray', 4000);
+INSERT INTO `Procedure` VALUES('CT-Scan', 2000);
+INSERT INTO `Procedure` VALUES('Chemotherapy', 10000);
+INSERT INTO `Procedure` VALUES('MRI', 1000);
 
-INSERT INTO `Procedure` VALUES(0, 'X-Ray', 4000);
-INSERT INTO `Procedure` VALUES(0, 'CT-Scan', 2000);
-INSERT INTO `Procedure` VALUES(0, 'Chemotherapy', 10000);
-INSERT INTO `Procedure` VALUES(0, 'MRI', 1000);
+INSERT INTO `Treatment` VALUES(0, 1, 'galileo', '', 1, False,'2023-03-03');
+INSERT INTO `Treatment` VALUES(0, 2, 'stephen', '', 2, False,NULL);
+INSERT INTO `Treatment` VALUES(0, 3, 'nikola', '', 3, False,NULL);
+INSERT INTO `Treatment` VALUES(0, 4, 'thomas', '', 4, False,'2023-03-04');
 
-INSERT INTO `Treatment` VALUES(0, 101, 501, 2501);
-INSERT INTO `Treatment` VALUES(0, 103, 502, 2502);
-INSERT INTO `Treatment` VALUES(0, 104, 503, 2503);
-INSERT INTO `Treatment` VALUES(0, 104, 504, 2504);
+INSERT INTO `Test` VALUES(0, 1, 'galileo', '', 1, False,'2023-03-10');
+INSERT INTO `Test` VALUES(0, 2, 'stephen', '', 2, False,'2023-03-08');
+INSERT INTO `Test` VALUES(0, 3, 'nikola', '', 3, False,'2023-03-08');
+INSERT INTO `Test` VALUES(0, 4, 'thomas', '', 4, False,'2023-03-07');

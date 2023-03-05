@@ -35,3 +35,18 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model=Room
         fields=['room_id','availability']
+
+class AppointmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Appointment
+        fields=['appointment_id','patient_id','doctor_username','date','symptoms','completed']
+
+class TreatmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Treatment
+        fields=['treatment_id','patient_id','doctor_username','prescription','appointment_id','saved_treatment','date']
+
+class TestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Test
+        fields=['test_id','patient_id','doctor_username','procedure','appointment_id','saved_test','date']

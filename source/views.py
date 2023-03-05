@@ -243,19 +243,34 @@ class Receptionist_Functions(APIView):
             success=True
             response={'success':success,'errorMessage':error_message,'data':data}  
             return Response(response,status=status.HTTP_200_OK)
+        
+        elif(kwargs['method']=='admittances'):
+            admittances=Admitted.objects.raw('SELECT * FROM Admitted WHERE currently_admitted=True')
+            data=[(admittance.patient_id,admittance.room_id) for admittance in admittances]
+            success=True
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+        
+        elif(kwargs['method']=='doctors'):
+            doctors=Doctor.objects.raw('SELECT * FROM Doctor')
+            data=[(doctor.doctor_name,doctor.department) for doctor in doctors]
+            success=True
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+        
         else:
             success=False
             error_message="Wrong request sent for Receptionist"
             data=[]
             response={'success':success,'errorMessage':error_message,'data':data}  
-            return Response(response,status=status.HTTP_200_OK)
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
             
+        
     def post(self, request, *args, **kwargs):
         success=False
         error_message=""
         if(kwargs['method']=='register'):
-            data = { 
-                'patient_id':0,
+            data = {
                 'patient_name': request.data.get('name'), 
                 'patient_address': request.data.get('address'),
                 'admitted':False
@@ -274,7 +289,6 @@ class Receptionist_Functions(APIView):
             
         elif(kwargs['method']=='admit'):
             data={
-                'admission_id':0,
                 'patient_id':request.data.get('patient_id'),
                 'room_id':request.data.get('room_id'),
                 'currently_admitted':False
@@ -323,17 +337,41 @@ class Receptionist_Functions(APIView):
                 response={'success':success,'errorMessage':error_message}
                 return Response(response, status=status.HTTP_200_OK)
         
-        else:
-            success=False
-            error_message="Wrong request sent for Receptionist"
-            response={'success':success,'errorMessage':error_message}
-            return Response(response,status=status.HTTP_200_OK)
+        elif(kwargs['method']=='scheduleappt'):
+            data={
+                'patient_id':request.data.get('patient_id'),
+                'doctor_username':request.data.get('doctor_username'),
+                'date':request.data.get('date'),
+                'symptoms':request.data.get('symptoms'),
+                'completed':False
+            }
+            current_appts=Appointment.objects.raw('SELECT * FROM Appointment WHERE doctor_username=%s AND date=%s',[data['doctor_username'],data['date']])
+            if(len(current_appts)>=5):
+                success=False
+                error_message="Doctor is unavailable"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_200_OK)
+            else:
+                serializer=AppointmentSerializer(data=data)
+                if serializer.is_valid():
+                    try:
+                        serializer.save()
+                    except:
+                        success=False
+                        error_message="Appointment already exists"
+                        response={'success':success,'errorMessage':error_message}  
+                        return Response(response, status=status.HTTP_200_OK)
+                    success=True
+                    response={'success':success,'errorMessage':error_message}  
+                    return Response(response, status=status.HTTP_201_CREATED)
+                else:
+                    success=False
+                    error_message="Wrong request sent for Receptionist"
+                    response={'success':success,'errorMessage':error_message}  
+                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
         
-    def delete(self, request, *args, **kwargs):
-        success=False
-        error_message=""
-        if(kwargs['method']=='discharge'):
-            patients=Patient.objects.raw('SELECT * FROM Patient WHERE patient_id=%s',[request.GET.get('patient_id')])
+        elif(kwargs['method']=='discharge'):
+            patients=Patient.objects.raw('SELECT * FROM Patient WHERE patient_id=%s',[request.data.get('patient_id')])
             if(len(patients)==0):
                 success=False
                 error_message="No such patient found"
@@ -348,9 +386,9 @@ class Receptionist_Functions(APIView):
                 return Response(response,status=status.HTTP_200_OK)
             
             with connection.cursor() as cursor:
-                admission=Admitted.objects.raw('SELECT * FROM Admitted WHERE patient_id=%s AND currently_admitted=True',[request.GET.get('patient_id')])
+                admission=Admitted.objects.raw('SELECT * FROM Admitted WHERE patient_id=%s AND currently_admitted=True',[request.data.get('patient_id')])
                 cursor.execute("UPDATE Admitted SET currently_admitted=False WHERE admission_id=%s", [admission[0].admission_id])
-                cursor.execute("UPDATE Patient SET admitted=False WHERE patient_id=%s",[request.GET.get('patient_id')])
+                cursor.execute("UPDATE Patient SET admitted=False WHERE patient_id=%s",[request.data.get('patient_id')])
                 cursor.execute("UPDATE Room SET availability=True WHERE room_id=%s",[admission[0].room_id])
                 success=True
                 error_message="Successfully discharged patient"
@@ -361,6 +399,191 @@ class Receptionist_Functions(APIView):
             success=False
             error_message="Wrong request sent for Receptionist"
             response={'success':success,'errorMessage':error_message}
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+
+class Clerk_Functions(APIView):
+    def get(self, request, *args, **kwargs):
+        success=False
+        error_message=""
+        if(kwargs['method']=='tests'):
+            tests=Test.objects.raw('SELECT * FROM Test WHERE saved_test=False')
+            data=[(test.test_id,test.patient_id,test.doctor_username,test.procedure_name) for test in tests]
+            success=True
+            response={'success':success,'errorMessage':error_message,'data':data}  
             return Response(response,status=status.HTTP_200_OK)
         
+        elif(kwargs['method']=='treatments'):
+            treatments=Treatment.objects.raw('SELECT * FROM Treatment WHERE saved_treatment=False')
+            data=[(treatment.treatment_id,treatment.patient_id,treatment.doctor_username,treatment.prescription) for treatment in treatments]
+            success=True
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+        
+        else:
+            success=False
+            error_message="Wrong request sent for Clerk"
+            response={'success':success,'errorMessage':error_message}
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
+        
+    def post(self, request, *args, **kwargs):
+        success=False
+        error_message=""
+        if(kwargs['method']=='savetests'):
+            data={
+                'date':request.data.get('date'),
+                'test_id':request.data.get('test_id')
+            }
+            print("Date=",data['date'])
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE Test SET saved_test=True,date=%s WHERE test_id=%s",[data['date'],data['test_id']])
+                success=True
+                response={'success':success,'errorMessage':error_message}
+                return Response(response,status=status.HTTP_200_OK)
+        
+        elif(kwargs['method']=='savetreatments'):
+            data={
+                'date':request.data.get('date'),
+                'treatment_id':request.data.get('treatment_id')
+            }
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE Treatment SET saved_treatment=True,date=%s WHERE treatment_id=%s",[data['date'],data['treatment_id']])
+                success=True
+                response={'success':success,'errorMessage':error_message}
+                return Response(response,status=status.HTTP_200_OK)
+        else:
+            success=False
+            error_message="Wrong request sent for Clerk"
+            response={'success':success,'errorMessage':error_message}
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+class Doctor_Functions(APIView):
+    def get(self, request, *args, **kwargs):
+        success=False
+        error_message=""
+
+        # Sending all patients
+        # method = all_patients,
+        # "doctor_username" from frontend
+
+        if(kwargs['method']=='all_patients'):
+            patients=Patient.objects.raw('SELECT * FROM Patient WHERE EXISTS (SELECT * FROM Treatment WHERE Treatment.patient_id = Patient.patient_id AND Treatment.doctor_username = %s)', [request.GET.get('doctor_username')])
+            data=[(row.patient_id,row.patient_name) for row in patients]
+            success=True
+            error_message=""
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+
+        # Sending specific patient
+        # method = patient
+        # "patient_id" and "doctor_username" from frontend
+
+        elif(kwargs['method']=='patient'):
+            patients = Patient.objects.raw('SELECT * FROM Patient WHERE patient_id=%s',[request.GET.get('patient_id')])
+            if(len(patients) == 0):
+                success=False
+                error_message="No such patient found"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response,status=status.HTTP_200_OK)
+            success=True
+            error_message=""
+            patient=patients[0]
+            room="NA"
+            rooms = Admitted.objects.raw('SELECT * from Admitted WHERE patient_id=%s AND currently_admitted=True',[request.GET.get('patient_id')])
+            if(len(rooms) > 0):
+                room = rooms[0].room_id
+            treatments_data = Treatment.objects.raw('SELECT * FROM Treatment WHERE patient_id=%s AND doctor_username=%s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])   
+            treatments = [(row.treatment_id, row.prescription) for row in treatments_data]
+            response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments}
+            return Response(response,status=status.HTTP_200_OK)
+        
+        # elif(kwargs['method']=='patientbyname'):
+        #     patients = Patient.objects.raw('SELECT * FROM Patient WHERE patient_name=%s',[request.GET.get('patient_name'.lower())])
+        #     if(len(patients) == 0):
+        #         success=False
+        #         error_message="No such patient found"
+        #         response={'success':success,'errorMessage':error_message}
+        #         return Response(response,status=status.HTTP_200_OK)
+        #     success=True
+        #     error_message=""
+        #     patient=patients[0]
+        #     room="NA"
+        #     rooms = Admitted.objects.raw('SELECT * from Admitted WHERE patient_id=%s AND currently_admitted=True',[request.GET.get('patient_id')])
+        #     if(len(rooms) > 0):
+        #         room = rooms[0].room_id
+        #     treatments_data = Treatment.objects.raw('SELECT * FROM Treatment WHERE patient_id=%s AND doctor_username=%s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])   
+        #     treatments = [(row.treatment_id, row.prescription) for row in treatments_data]
+        #     response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments}
+        #     return Response(response,status=status.HTTP_200_OK)
+        
+        # Sending all pending appointments to the doctor
+        # method = all_appointments
+        # "doctor_username" from frontend
+
+        elif(kwargs['method']=='all_appointments'):
+            appointments=Appointment.objects.raw('SELECT * FROM Appointment WHERE doctor_username=%s AND completed=False', [request.GET.get('doctor_username')])
+            data=[(row.appointment_id,row.patient_id,row.date) for row in appointments]
+            success=True
+            error_message=""
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+
+        else:
+            success=False
+            error_message="Wrong request sent for Doctor"
+            data=[]
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        success=False
+        error_message=""
+
+        # "appointment_id", "patient_id", "doctor_username", "prescription", "procedure_name" from frontend
+        # considered procedure_name as string of procedures
+
+        if(kwargs['method']=='appointment'):
+            dataTreatment = {
+                'patient_id': request.data.get('patient_id'), 
+                'doctor_username': request.data.get('doctor_username'),
+                'prescription': request.data.get('prescription'),
+                'appointment_id': request.data.get('appointment_id'),
+                'saved_treatment': False
+            }
+
+            dataTest = {
+                'patient_id': request.data.get('patient_id'), 
+                'doctor_username': request.data.get('doctor_username'),
+                'procedure_name': request.data.get('procedure_name'),
+                'appointment_id': request.data.get('appointment_id'),
+                'saved_test': False
+            }
+
+            serializerTreatment = TreatmentSerializer(data=dataTreatment)
+            if serializerTreatment.is_valid():
+                serializerTreatment.save()
+            else:
+                success=False
+                error_message="Unable to register treatment"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_200_OK)
+
+            serializer = TestSerializer(data=dataTest)
+            if serializer.is_valid():
+                serializer.save()
+                with connection.cursor() as cursor:
+                    cursor.execute("UPDATE Appointment SET completed=True WHERE appointment_id=%s", [request.data.get('appointment_id')])
+                    success=True
+                    response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_201_CREATED)
+            else:
+                success=False
+                error_message="Unable to register test"
+                response={'success':success,'errorMessage':error_message}
+                return Response(response, status=status.HTTP_200_OK)
+
+        else:
+            success=False
+            error_message="Wrong request sent for Doctor"
+            response={'success':success,'errorMessage':error_message}
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
