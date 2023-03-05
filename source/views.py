@@ -414,14 +414,28 @@ class Clerk_Functions(APIView):
         error_message=""
         if(kwargs['method']=='tests'):
             tests=Test.objects.raw('SELECT * FROM Test WHERE saved_test=False')
-            data=[(test.test_id,test.patient_id,test.doctor_username,test.procedure_name) for test in tests]
+            data=[]
+            for test in tests:
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT patient_name FROM Patient WHERE patient_id=%s',[test.patient_id])
+                    patient_name=cursor.fetchone()[0]
+                    cursor.execute('SELECT doctor_name FROM Doctor WHERE doctor_username=%s',[test.doctor_username])
+                    doctor_name=cursor.fetchone()[0]
+                    data.append([test.test_id,test.patient_id,patient_name,test.doctor_username,doctor_name,test.procedure_name])
             success=True
             response={'success':success,'errorMessage':error_message,'data':data}  
             return Response(response,status=status.HTTP_200_OK)
         
         elif(kwargs['method']=='treatments'):
             treatments=Treatment.objects.raw('SELECT * FROM Treatment WHERE saved_treatment=False')
-            data=[(treatment.treatment_id,treatment.patient_id,treatment.doctor_username,treatment.prescription) for treatment in treatments]
+            data=[]
+            for treatment in treatments:
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT patient_name FROM Patient WHERE patient_id=%s',[treatment.patient_id])
+                    patient_name=cursor.fetchone()[0]
+                    cursor.execute('SELECT doctor_name FROM Doctor WHERE doctor_username=%s',[treatment.doctor_username])
+                    doctor_name=cursor.fetchone()[0]
+                    data.append([treatment.treatment_id,treatment.patient_id,patient_name,treatment.doctor_username,doctor_name,treatment.prescription])
             success=True
             response={'success':success,'errorMessage':error_message,'data':data}  
             return Response(response,status=status.HTTP_200_OK)
@@ -440,7 +454,6 @@ class Clerk_Functions(APIView):
                 'date':request.data.get('date'),
                 'test_id':request.data.get('test_id')
             }
-            print("Date=",data['date'])
             with connection.cursor() as cursor:
                 cursor.execute("UPDATE Test SET saved_test=True,date=%s WHERE test_id=%s",[data['date'],data['test_id']])
                 success=True
