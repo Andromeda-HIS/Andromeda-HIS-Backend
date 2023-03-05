@@ -564,7 +564,8 @@ class Doctor_Functions(APIView):
                 'appointment_id': request.data.get('appointment_id'),
                 'saved_test': False
             }
-
+            print("Procedure name=",dataTest['procedure_name'])
+            print("Prescription=",dataTreatment['prescription'])
             serializerTreatment = TreatmentSerializer(data=dataTreatment)
             if not serializerTreatment.is_valid():
                 success=False
@@ -574,9 +575,9 @@ class Doctor_Functions(APIView):
 
             serializer = TestSerializer(data=dataTest)
             if serializer.is_valid():
-                if not dataTest['procedure_name'] == "":
+                if not dataTest['procedure_name'] is None:
                     serializer.save()
-                if not dataTreatment['prescription'] == "":
+                if not dataTreatment['prescription'] is None:
                     serializerTreatment.save()
                 with connection.cursor() as cursor:
                     cursor.execute("UPDATE Appointment SET completed=True WHERE appointment_id=%s", [request.data.get('appointment_id')])

@@ -88,7 +88,7 @@ class Test(models.Model):
     test_id=models.AutoField(primary_key=True)
     patient_id=models.IntegerField()
     doctor_username=models.CharField(max_length=100)
-    procedure_name=models.CharField(max_length=100)
+    procedure_name=models.CharField(max_length=100,null=True)
     appointment_id=models.IntegerField()
     saved_test=models.BooleanField()
     date=models.DateField(null=True)
