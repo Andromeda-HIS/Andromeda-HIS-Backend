@@ -18,7 +18,6 @@ class LoginApiView(APIView):
             'password': request.GET.get('password'), 
             'designation': request.GET.get('designation')
         }
-        print(data)
         # return Response(status=status.HTTP_200_OK)
         success=False
         error_message=""
