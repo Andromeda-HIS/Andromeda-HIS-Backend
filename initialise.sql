@@ -1,9 +1,9 @@
 INSERT INTO `Admin` VALUES('Albert','hms');
 
 INSERT INTO `Patient` VALUES(0,'Marconi','C-33 Hall Street, Geneva, Switzerland', True);
-INSERT INTO `Patient` VALUES(0,'Isaac','A-56 Beacon Street, Lucknow, India', False);
+INSERT INTO `Patient` VALUES(0,'Isaac','A-56 Beacon Street, Lucknow, India', True);
 INSERT INTO `Patient` VALUES(0,'Charles','B-3, Berlington Street, New York, USA', True);
-INSERT INTO `Patient` VALUES(0,'Marie','D-12 Hill Street, Kolkata, India', True);
+INSERT INTO `Patient` VALUES(0,'Marie','D-12 Hill Street, Kolkata, India', False);
 
 INSERT INTO `Room` VALUES(0, False);
 INSERT INTO `Room` VALUES(0, False);
