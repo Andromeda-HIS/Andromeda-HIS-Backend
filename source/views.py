@@ -179,7 +179,7 @@ class Admin_Functions(APIView):
         designation=request.GET.get('designation')
         if(designation=='Admin'):
             with connection.cursor() as cursor:
-                print("username=",request.GET.get('username'))
+                # print("username=",request.GET.get('username'))
                 if(len(Admin.objects.raw('SELECT * FROM Admin WHERE admin_username=%s',[request.GET.get('username')]))>0):
                     cursor.execute("DELETE FROM Admin WHERE admin_username=%s", [request.GET.get('username')])
                     success=True
@@ -576,8 +576,8 @@ class Doctor_Functions(APIView):
                 'appointment_id': request.data.get('appointment_id'),
                 'saved_test': False
             }
-            print("Procedure name=",dataTest['procedure_name'])
-            print("Prescription=",dataTreatment['prescription'])
+            # print("Procedure name=",dataTest['procedure_name'])
+            # print("Prescription=",dataTreatment['prescription'])
             serializerTreatment = TreatmentSerializer(data=dataTreatment)
             if not serializerTreatment.is_valid():
                 success=False
