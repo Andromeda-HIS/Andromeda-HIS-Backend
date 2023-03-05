@@ -253,7 +253,7 @@ class Receptionist_Functions(APIView):
         
         elif(kwargs['method']=='doctors'):
             doctors=Doctor.objects.raw('SELECT * FROM Doctor')
-            data=[(doctor.doctor_name,doctor.department) for doctor in doctors]
+            data=[(doctor.doctor_username,doctor.doctor_name,doctor.department) for doctor in doctors]
             success=True
             response={'success':success,'errorMessage':error_message,'data':data}  
             return Response(response,status=status.HTTP_200_OK)
