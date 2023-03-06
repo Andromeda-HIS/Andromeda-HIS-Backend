@@ -173,7 +173,9 @@ class Admin_Functions(APIView):
         if(request.data.get('designation')=='Admin'):
             data = { 
                 'admin_username': request.data.get('username'), 
-                'admin_password': request.data.get('password')
+                'admin_password': request.data.get('password'),
+                'admin_name':request.data.get('name'),
+                'admin_address':request.data.get('address')
             }
             serializer = AdminSerializer(data=data)
             if serializer.is_valid():
