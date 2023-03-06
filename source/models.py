@@ -88,5 +88,8 @@ class Test(models.Model):
     appointment_id=models.IntegerField()
     saved_test=models.BooleanField()
     date=models.DateField(null=True)
+    saved_test_result=models.BooleanField()
+    test_result=models.TextField(null=True)
+    test_result_image=models.ImageField(upload_to='test_result_images/',null=True)
     class Meta:
         db_table='Test'

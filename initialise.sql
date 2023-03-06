@@ -31,3 +31,5 @@ INSERT INTO `Appointment` VALUES(0, 1, 'galileo', '2023-03-02', 'cough, sore thr
 INSERT INTO `Appointment` VALUES(0, 2, 'stephen', '2023-03-03', 'weakness, red-eyes, cough', False);
 INSERT INTO `Appointment` VALUES(0, 3, 'nikola', '2023-03-04', 'fever, high blood pressure', False);
 INSERT INTO `Appointment` VALUES(0, 4, 'thomas', '2023-03-05', 'muscular cramps', False);
+
+INSERT INTO `Test` VALUES(0,1,'galileo','X-Ray',1,False,NULL,False,NULL,NULL)

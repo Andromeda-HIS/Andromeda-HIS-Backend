@@ -509,6 +509,20 @@ class Clerk_Functions(APIView):
             response={'success':success,'errorMessage':error_message,'data':data}  
             return Response(response,status=status.HTTP_200_OK)
         
+        elif(kwargs['method']=='testresults'):
+            tests=Test.objects.raw('SELECT * FROM Test WHERE saved_test=True AND saved_test_result=False')
+            data=[]
+            for test in tests:
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT patient_name FROM Patient WHERE patient_id=%s',[test.patient_id])
+                    patient_name=cursor.fetchone()[0]
+                    cursor.execute('SELECT doctor_name FROM Doctor WHERE doctor_username= BINARY %s',[test.doctor_username])
+                    doctor_name=cursor.fetchone()[0]
+                    data.append([test.test_id,test.patient_id,patient_name,test.doctor_username,doctor_name,test.procedure_name])
+            success=True
+            response={'success':success,'errorMessage':error_message,'data':data}  
+            return Response(response,status=status.HTTP_200_OK)
+
         else:
             success=False
             error_message="Wrong request sent for Clerk"
@@ -539,6 +553,19 @@ class Clerk_Functions(APIView):
                 success=True
                 response={'success':success,'errorMessage':error_message}
                 return Response(response,status=status.HTTP_200_OK)
+        
+        elif(kwargs['method']=='savetestresults'):
+            data={
+                'test_id':request.data.get('test_id'),
+                'test_result':request.data.get('test_result'),
+                'test_result_image':request.data.get('test_result_image')
+            }
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE Test SET saved_test_result=True,test_result=%s,test_result_image=%s WHERE test_id=%s",[data['test_result'],data['test_result_image'],data['test_id']])
+                success=True
+                response={'success':success,'errorMessage':error_message}
+                return Response(response,status=status.HTTP_200_OK)
+            
         else:
             success=False
             error_message="Wrong request sent for Clerk"
