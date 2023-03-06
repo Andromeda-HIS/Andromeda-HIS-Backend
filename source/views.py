@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.core.files.storage import FileSystemStorage
 from rest_framework import status
 from rest_framework import permissions
 from django.db import connection
@@ -558,7 +559,7 @@ class Clerk_Functions(APIView):
             data={
                 'test_id':request.data.get('test_id'),
                 'test_result':request.data.get('test_result'),
-                'test_result_image':request.data.get('test_result_image')
+                'test_result_image':request.FILES['test_result_image'].read()
             }
             with connection.cursor() as cursor:
                 cursor.execute("UPDATE Test SET saved_test_result=True,test_result=%s,test_result_image=%s WHERE test_id=%s",[data['test_result'],data['test_result_image'],data['test_id']])
