@@ -69,12 +69,6 @@ class Appointment(models.Model):
             models.UniqueConstraint(fields=['patient_id','doctor_username','date'],name='appointment_pk')
         ]
 
-class Procedure(models.Model):
-    procedure_name=models.CharField(max_length=100,primary_key=True)
-    cost=models.IntegerField()
-    class Meta:
-        db_table='Procedure'
-
 class Treatment(models.Model):
     treatment_id=models.AutoField(primary_key=True)
     patient_id=models.IntegerField()

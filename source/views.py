@@ -7,18 +7,12 @@ from .models import *
 from .serializers import *
 
 class LoginApiView(APIView):
-    # add permission to check if user is authenticated
-    # permission_classes = [permissions.IsAuthenticated]
-
-    # 1. List all
     def get(self, request, *args, **kwargs):
-        # admins = Admin.objects.filter(admin_id=request.GET.get('admin_id'))
         data = { 
             'userName':request.GET.get('userName'),
             'password': request.GET.get('password'), 
             'designation': request.GET.get('designation')
         }
-        # return Response(status=status.HTTP_200_OK)
         success=False
         error_message=""
         if(data['designation']=='Admin'):
@@ -160,16 +154,11 @@ class ProfileView(APIView):
             error_message="Wrong user type sent"
             response={'success':success,'errorMessage':error_message}
 
-    # 2. Create
+
 class Admin_Functions(APIView):
     def post(self, request, *args, **kwargs):
-        # print("Request=",request)
-        # print("args=",args)
-        # print("kwargs=",kwargs)
-        # print('method=',kwargs['method'])
         success=False
         error_message=""
-        # if(kwargs['method']=='add'):
         if(request.data.get('designation')=='Admin'):
             data = { 
                 'admin_username': request.data.get('username'), 
@@ -256,7 +245,6 @@ class Admin_Functions(APIView):
         designation=request.GET.get('designation')
         if(designation=='Admin'):
             with connection.cursor() as cursor:
-                # print("username=",request.GET.get('username'))
                 if(len(Admin.objects.raw('SELECT * FROM Admin WHERE admin_username=%s',[request.GET.get('username')]))>0):
                     cursor.execute("DELETE FROM Admin WHERE admin_username=%s", [request.GET.get('username')])
                     success=True
@@ -597,25 +585,6 @@ class Doctor_Functions(APIView):
             response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments}
             return Response(response,status=status.HTTP_200_OK)
         
-        # elif(kwargs['method']=='patientbyname'):
-        #     patients = Patient.objects.raw('SELECT * FROM Patient WHERE patient_name=%s',[request.GET.get('patient_name'.lower())])
-        #     if(len(patients) == 0):
-        #         success=False
-        #         error_message="No such patient found"
-        #         response={'success':success,'errorMessage':error_message}
-        #         return Response(response,status=status.HTTP_200_OK)
-        #     success=True
-        #     error_message=""
-        #     patient=patients[0]
-        #     room="NA"
-        #     rooms = Admitted.objects.raw('SELECT * from Admitted WHERE patient_id=%s AND currently_admitted=True',[request.GET.get('patient_id')])
-        #     if(len(rooms) > 0):
-        #         room = rooms[0].room_id
-        #     treatments_data = Treatment.objects.raw('SELECT * FROM Treatment WHERE patient_id=%s AND doctor_username=%s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])   
-        #     treatments = [(row.treatment_id, row.prescription) for row in treatments_data]
-        #     response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments}
-        #     return Response(response,status=status.HTTP_200_OK)
-        
         # Sending all pending appointments to the doctor
         # method = all_appointments
         # "doctor_username" from frontend
@@ -639,9 +608,6 @@ class Doctor_Functions(APIView):
         success=False
         error_message=""
 
-        # "appointment_id", "patient_id", "doctor_username", "prescription", "procedure_name" from frontend
-        # considered procedure_name as string of procedures
-
         if(kwargs['method']=='appointment'):
             dataTreatment = {
                 'patient_id': request.data.get('patient_id'), 
@@ -658,8 +624,6 @@ class Doctor_Functions(APIView):
                 'appointment_id': request.data.get('appointment_id'),
                 'saved_test': False
             }
-            # print("Procedure name=",dataTest['procedure_name'])
-            # print("Prescription=",dataTreatment['prescription'])
             serializerTreatment = TreatmentSerializer(data=dataTreatment)
             if not serializerTreatment.is_valid():
                 success=False
