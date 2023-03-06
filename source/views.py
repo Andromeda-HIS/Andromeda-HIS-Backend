@@ -16,7 +16,7 @@ class LoginApiView(APIView):
         success=False
         error_message=""
         if(data['designation']=='Admin'):
-            admins = Admin.objects.raw("SELECT * FROM Admin WHERE admin_username=%s",[data['userName']])
+            admins = Admin.objects.raw("SELECT * FROM Admin WHERE admin_username= BINARY %s",[data['userName']])
             if len(admins)>0:
                 admin=admins[0]
                 if(admin.admin_password==data['password']):
@@ -31,7 +31,7 @@ class LoginApiView(APIView):
             return Response(response,status=status.HTTP_200_OK)
         
         elif(data['designation']=='Clerk'):
-            deos = Data_Entry_Operator.objects.raw("SELECT * FROM Data_Entry_Operator WHERE deo_username=%s",[data['userName']])
+            deos = Data_Entry_Operator.objects.raw("SELECT * FROM Data_Entry_Operator WHERE deo_username= BINARY %s",[data['userName']])
             if len(deos)>0:
                 deo=deos[0]
                 if(deo.deo_password==data['password']):
@@ -46,7 +46,7 @@ class LoginApiView(APIView):
             return Response(response,status=status.HTTP_200_OK)
 
         elif(data['designation']=='Doctor'):
-            doctors = Doctor.objects.raw("SELECT * FROM Doctor WHERE doctor_username=%s",[data['userName']])
+            doctors = Doctor.objects.raw("SELECT * FROM Doctor WHERE doctor_username= BINARY %s",[data['userName']])
             if len(doctors)>0:
                 doctor=doctors[0]
                 if(doctor.doctor_password==data['password']):
@@ -61,7 +61,7 @@ class LoginApiView(APIView):
             return Response(response,status=status.HTTP_200_OK)
 
         elif(data['designation']=='Receptionist'):
-            fdos = Front_Desk_Operator.objects.raw("SELECT * FROM Front_Desk_Operator WHERE fdo_username=%s",[data['userName']])
+            fdos = Front_Desk_Operator.objects.raw("SELECT * FROM Front_Desk_Operator WHERE fdo_username= BINARY %s",[data['userName']])
             if len(fdos)>0:
                 fdo=fdos[0]
                 if(fdo.fdo_password==data['password']):
@@ -87,7 +87,7 @@ class ProfileView(APIView):
         if(kwargs['usertype']=='admin'):
             username=request.GET.get('username')
             with connection.cursor() as cursor:
-                cursor.execute('SELECT admin_name,admin_address FROM Admin WHERE admin_username=%s',[username])
+                cursor.execute('SELECT admin_name,admin_address FROM Admin WHERE admin_username= BINARY %s',[username])
                 row=cursor.fetchone()
                 if row is None:
                     success=False
@@ -103,7 +103,7 @@ class ProfileView(APIView):
         elif(kwargs['usertype']=='receptionist'):
             username=request.GET.get('username')
             with connection.cursor() as cursor:
-                cursor.execute('SELECT fdo_name,fdo_address FROM Front_Desk_Operator WHERE fdo_username=%s',[username])
+                cursor.execute('SELECT fdo_name,fdo_address FROM Front_Desk_Operator WHERE fdo_username= BINARY %s',[username])
                 row=cursor.fetchone()
                 if row is None:
                     success=False
@@ -119,7 +119,7 @@ class ProfileView(APIView):
         elif(kwargs['usertype']=='clerk'):
             username=request.GET.get('username')
             with connection.cursor() as cursor:
-                cursor.execute('SELECT deo_name,deo_address FROM Data_Entry_Operator WHERE deo_username=%s',[username])
+                cursor.execute('SELECT deo_name,deo_address FROM Data_Entry_Operator WHERE deo_username= BINARY %s',[username])
                 row=cursor.fetchone()
                 if row is None:
                     success=False
@@ -135,7 +135,7 @@ class ProfileView(APIView):
         elif(kwargs['usertype']=='doctor'):
             username=request.GET.get('username')
             with connection.cursor() as cursor:
-                cursor.execute('SELECT doctor_name,doctor_address,department FROM Doctor WHERE doctor_username=%s',[username])
+                cursor.execute('SELECT doctor_name,doctor_address,department FROM Doctor WHERE doctor_username= BINARY %s',[username])
                 row=cursor.fetchone()
                 if row is None:
                     success=False
@@ -245,8 +245,8 @@ class Admin_Functions(APIView):
         designation=request.GET.get('designation')
         if(designation=='Admin'):
             with connection.cursor() as cursor:
-                if(len(Admin.objects.raw('SELECT * FROM Admin WHERE admin_username=%s',[request.GET.get('username')]))>0):
-                    cursor.execute("DELETE FROM Admin WHERE admin_username=%s", [request.GET.get('username')])
+                if(len(Admin.objects.raw('SELECT * FROM Admin WHERE admin_username= BINARY %s',[request.GET.get('username')]))>0):
+                    cursor.execute("DELETE FROM Admin WHERE admin_username= BINARY %s", [request.GET.get('username')])
                     success=True
                     error_message="Successfully deleted user"
                 else:
@@ -257,8 +257,8 @@ class Admin_Functions(APIView):
             
         elif(designation=='Doctor'):
             with connection.cursor() as cursor:
-                if(len(Doctor.objects.raw('SELECT * FROM Doctor WHERE doctor_username=%s',[request.GET.get('username')]))>0):
-                    cursor.execute("DELETE FROM Doctor WHERE doctor_username=%s", [request.GET.get('username')])
+                if(len(Doctor.objects.raw('SELECT * FROM Doctor WHERE doctor_username= BINARY %s',[request.GET.get('username')]))>0):
+                    cursor.execute("DELETE FROM Doctor WHERE doctor_username= BINARY %s", [request.GET.get('username')])
                     success=True
                     error_message="Successfully deleted user"
                 else:
@@ -269,8 +269,8 @@ class Admin_Functions(APIView):
             
         elif(designation=='Clerk'):
             with connection.cursor() as cursor:
-                if(len(Data_Entry_Operator.objects.raw('SELECT * FROM Data_Entry_Operator WHERE deo_username=%s',[request.GET.get('username')]))>0):
-                    cursor.execute("DELETE FROM Data_Entry_Operator WHERE deo_username=%s", [request.GET.get('username')])
+                if(len(Data_Entry_Operator.objects.raw('SELECT * FROM Data_Entry_Operator WHERE deo_username= BINARY %s',[request.GET.get('username')]))>0):
+                    cursor.execute("DELETE FROM Data_Entry_Operator WHERE deo_username= BINARY %s", [request.GET.get('username')])
                     success=True
                     error_message="Successfully deleted user"
                 else:
@@ -281,8 +281,8 @@ class Admin_Functions(APIView):
         
         elif(designation=='Receptionist'):
             with connection.cursor() as cursor:
-                if(len(Front_Desk_Operator.objects.raw('SELECT * FROM Front_Desk_Operator WHERE fdo_username=%s',[request.GET.get('username')]))>0):
-                    cursor.execute("DELETE FROM Front_Desk_Operator WHERE fdo_username=%s", [request.GET.get('username')])
+                if(len(Front_Desk_Operator.objects.raw('SELECT * FROM Front_Desk_Operator WHERE fdo_username= BINARY %s',[request.GET.get('username')]))>0):
+                    cursor.execute("DELETE FROM Front_Desk_Operator WHERE fdo_username= BINARY %s", [request.GET.get('username')])
                     success=True
                     error_message="Successfully deleted user"
                 else:
@@ -420,7 +420,7 @@ class Receptionist_Functions(APIView):
                 response={'success':success,'errorMessage':error_message}
                 return Response(response, status=status.HTTP_200_OK)
             
-            current_appts=Appointment.objects.raw('SELECT * FROM Appointment WHERE doctor_username=%s AND date=%s',[data['doctor_username'],data['date']])
+            current_appts=Appointment.objects.raw('SELECT * FROM Appointment WHERE doctor_username= BINARY %s AND date=%s',[data['doctor_username'],data['date']])
             if(len(current_appts)>=5):
                 success=False
                 error_message="Doctor is unavailable"
@@ -488,7 +488,7 @@ class Clerk_Functions(APIView):
                 with connection.cursor() as cursor:
                     cursor.execute('SELECT patient_name FROM Patient WHERE patient_id=%s',[test.patient_id])
                     patient_name=cursor.fetchone()[0]
-                    cursor.execute('SELECT doctor_name FROM Doctor WHERE doctor_username=%s',[test.doctor_username])
+                    cursor.execute('SELECT doctor_name FROM Doctor WHERE doctor_username= BINARY %s',[test.doctor_username])
                     doctor_name=cursor.fetchone()[0]
                     data.append([test.test_id,test.patient_id,patient_name,test.doctor_username,doctor_name,test.procedure_name])
             success=True
@@ -502,7 +502,7 @@ class Clerk_Functions(APIView):
                 with connection.cursor() as cursor:
                     cursor.execute('SELECT patient_name FROM Patient WHERE patient_id=%s',[treatment.patient_id])
                     patient_name=cursor.fetchone()[0]
-                    cursor.execute('SELECT doctor_name FROM Doctor WHERE doctor_username=%s',[treatment.doctor_username])
+                    cursor.execute('SELECT doctor_name FROM Doctor WHERE doctor_username= BINARY %s',[treatment.doctor_username])
                     doctor_name=cursor.fetchone()[0]
                     data.append([treatment.treatment_id,treatment.patient_id,patient_name,treatment.doctor_username,doctor_name,treatment.prescription])
             success=True
@@ -555,7 +555,7 @@ class Doctor_Functions(APIView):
         # "doctor_username" from frontend
 
         if(kwargs['method']=='all_patients'):
-            patients=Patient.objects.raw('SELECT * FROM Patient WHERE EXISTS (SELECT * FROM Treatment WHERE Treatment.patient_id = Patient.patient_id AND Treatment.doctor_username = %s)', [request.GET.get('doctor_username')])
+            patients=Patient.objects.raw('SELECT * FROM Patient WHERE EXISTS (SELECT * FROM Treatment WHERE Treatment.patient_id = Patient.patient_id AND Treatment.doctor_username = BINARY %s)', [request.GET.get('doctor_username')])
             data=[(row.patient_id,row.patient_name) for row in patients]
             success=True
             error_message=""
@@ -580,7 +580,7 @@ class Doctor_Functions(APIView):
             rooms = Admitted.objects.raw('SELECT * from Admitted WHERE patient_id=%s AND currently_admitted=True',[request.GET.get('patient_id')])
             if(len(rooms) > 0):
                 room = rooms[0].room_id
-            treatments_data = Treatment.objects.raw('SELECT * FROM Treatment WHERE patient_id=%s AND doctor_username=%s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])   
+            treatments_data = Treatment.objects.raw('SELECT * FROM Treatment WHERE patient_id=%s AND doctor_username= BINARY %s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])   
             treatments = [(row.treatment_id, row.prescription) for row in treatments_data]
             response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments}
             return Response(response,status=status.HTTP_200_OK)
@@ -590,7 +590,7 @@ class Doctor_Functions(APIView):
         # "doctor_username" from frontend
 
         elif(kwargs['method']=='all_appointments'):
-            appointments=Appointment.objects.raw('SELECT * FROM Appointment WHERE doctor_username=%s AND completed=False ORDER BY date ASC', [request.GET.get('doctor_username')])
+            appointments=Appointment.objects.raw('SELECT * FROM Appointment WHERE doctor_username= BINARY %s AND completed=False ORDER BY date ASC', [request.GET.get('doctor_username')])
             data=[(row.appointment_id,row.patient_id,row.date,row.symptoms) for row in appointments]
             success=True
             error_message=""
