@@ -582,7 +582,9 @@ class Doctor_Functions(APIView):
                 room = rooms[0].room_id
             treatments_data = Treatment.objects.raw('SELECT * FROM Treatment WHERE patient_id=%s AND doctor_username= BINARY %s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])   
             treatments = [(row.treatment_id, row.prescription) for row in treatments_data]
-            response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments}
+            tests_data=Test.objects.raw('SELECT * FROM Test WHERE patient_id=%s AND doctor_username= BINARY %s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])
+            tests = [(row.test_id, row.procedure_name) for row in tests_data]
+            response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments,'tests':tests}
             return Response(response,status=status.HTTP_200_OK)
         
         # Sending all pending appointments to the doctor
