@@ -555,7 +555,7 @@ class Doctor_Functions(APIView):
         # "doctor_username" from frontend
 
         if(kwargs['method']=='all_patients'):
-            patients=Patient.objects.raw('SELECT * FROM Patient WHERE EXISTS (SELECT * FROM Treatment WHERE Treatment.patient_id = Patient.patient_id AND Treatment.doctor_username = BINARY %s)', [request.GET.get('doctor_username')])
+            patients=Patient.objects.raw('SELECT * FROM Patient WHERE (EXISTS (SELECT * FROM Treatment WHERE Treatment.patient_id = Patient.patient_id AND Treatment.doctor_username = BINARY %s)) OR (EXISTS (SELECT * FROM Test WHERE Test.patient_id = Patient.patient_id AND Test.doctor_username = BINARY %s))', [request.GET.get('doctor_username'),request.GET.get('doctor_username')])
             data=[(row.patient_id,row.patient_name) for row in patients]
             success=True
             error_message=""
