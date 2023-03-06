@@ -320,7 +320,12 @@ class Receptionist_Functions(APIView):
         
         elif(kwargs['method']=='admittances'):
             admittances=Admitted.objects.raw('SELECT * FROM Admitted WHERE currently_admitted=True')
-            data=[(admittance.patient_id,admittance.room_id) for admittance in admittances]
+            data=[]
+            for admittance in admittances:
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT patient_name FROM Patient WHERE patient_id=%s',[admittance.patient_id])
+                    patient_name=cursor.fetchone()[0]
+                    data.append([admittance.patient_id,patient_name,admittance.room_id])
             success=True
             response={'success':success,'errorMessage':error_message,'data':data}  
             return Response(response,status=status.HTTP_200_OK)
