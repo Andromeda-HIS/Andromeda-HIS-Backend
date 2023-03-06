@@ -8,4 +8,5 @@ urlpatterns = [
     path('receptionist/<str:method>/',Receptionist_Functions.as_view()),
     path('doctor/<str:method>/',Doctor_Functions.as_view()),
     path('clerk/<str:method>/',Clerk_Functions.as_view()),
+    path('profile/<str:usertype>/',ProfileView.as_view())
 ]

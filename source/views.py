@@ -85,6 +85,81 @@ class LoginApiView(APIView):
             error_message="Other type of user entered"
             response={'success':success,'errorMessage':error_message}
             return Response(response,status=status.HTTP_200_OK)
+
+class ProfileView(APIView):
+    def get(self,request,*args,**kwargs):
+        success=False
+        error_message=""
+        if(kwargs['usertype']=='admin'):
+            admin_username=request.GET.get('username')
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT admin_name,admin_address FROM Admin WHERE admin_username=%s',[admin_username])
+                row=cursor.fetchone()
+                if row is None:
+                    success=False
+                    error_message="No such user found"
+                    response={'success':success,'errorMessage':error_message}
+                    return Response(response,status=status.HTTP_200_OK)
+                admin_name=row[0]
+                admin_address=row[1]
+                success=True
+                response={'success':success,'errorMessage':error_message,'admin_username':admin_username,'admin_name':admin_name,'admin_address':admin_address}
+                return Response(response,status=status.HTTP_200_OK)
+        
+        elif(kwargs['usertype']=='receptionist'):
+            fdo_username=request.GET.get('username')
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT fdo_name,fdo_address FROM Front_Desk_Operator WHERE fdo_username=%s',[fdo_username])
+                row=cursor.fetchone()
+                if row is None:
+                    success=False
+                    error_message="No such user found"
+                    response={'success':success,'errorMessage':error_message}
+                    return Response(response,status=status.HTTP_200_OK)
+                fdo_name=row[0]
+                fdo_address=row[1]
+                success=True
+                response={'success':success,'errorMessage':error_message,'fdo_username':fdo_username,'fdo_name':fdo_name,'fdo_address':fdo_address}
+                return Response(response,status=status.HTTP_200_OK)
+        
+        elif(kwargs['usertype']=='clerk'):
+            deo_username=request.GET.get('username')
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT deo_name,deo_address FROM Data_Entry_Operator WHERE deo_username=%s',[deo_username])
+                row=cursor.fetchone()
+                if row is None:
+                    success=False
+                    error_message="No such user found"
+                    response={'success':success,'errorMessage':error_message}
+                    return Response(response,status=status.HTTP_200_OK)
+                deo_name=row[0]
+                deo_address=row[1]
+                success=True
+                response={'success':success,'errorMessage':error_message,'deo_username':deo_username,'deo_name':deo_name,'deo_address':deo_address}
+                return Response(response,status=status.HTTP_200_OK)
+        
+        elif(kwargs['usertype']=='doctor'):
+            doctor_username=request.GET.get('username')
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT doctor_name,doctor_address,department FROM Doctor WHERE doctor_username=%s',[doctor_username])
+                row=cursor.fetchone()
+                if row is None:
+                    success=False
+                    error_message="No such user found"
+                    response={'success':success,'errorMessage':error_message}
+                    return Response(response,status=status.HTTP_200_OK)
+                doctor_name=row[0]
+                doctor_address=row[1]
+                department=row[2]
+                success=True
+                response={'success':success,'errorMessage':error_message,'doctor_username':doctor_username,'doctor_name':doctor_name,'doctor_address':doctor_address,'department':department}
+                return Response(response,status=status.HTTP_200_OK)
+        
+        else:
+            success=False
+            error_message="Wrong user type sent"
+            response={'success':success,'errorMessage':error_message}
+
     # 2. Create
 class Admin_Functions(APIView):
     def post(self, request, *args, **kwargs):

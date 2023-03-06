@@ -1,4 +1,4 @@
-INSERT INTO `Admin` VALUES('Albert','hms');
+INSERT INTO `Admin` VALUES('Albert','hms','Albert Einstein','123 Rhinestrasse, Berlin');
 
 INSERT INTO `Patient` VALUES(0,'Marconi','C-33 Hall Street, Geneva, Switzerland', True);
 INSERT INTO `Patient` VALUES(0,'Isaac','A-56 Beacon Street, Lucknow, India', True);

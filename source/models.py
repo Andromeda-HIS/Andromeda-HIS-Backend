@@ -4,6 +4,8 @@ from datetime import date
 class Admin(models.Model):
     admin_username=models.CharField(max_length=100,primary_key=True)
     admin_password=models.TextField()
+    admin_name=models.TextField()
+    admin_address=models.TextField()
     class Meta:
         db_table='Admin'
 

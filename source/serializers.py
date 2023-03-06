@@ -4,7 +4,7 @@ from .models import *
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model=Admin
-        fields=['admin_username','admin_password']
+        fields=['admin_username','admin_password','admin_name','admin_address']
 
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
