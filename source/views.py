@@ -620,7 +620,11 @@ class Doctor_Functions(APIView):
             treatments = [(row.treatment_id, row.prescription) for row in treatments_data]
             
             tests_data=Test.objects.raw('SELECT * FROM Test WHERE patient_id=%s AND doctor_username= BINARY %s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])
-            tests = [(row.test_id, row.procedure_name,row.test_result,row.test_result_image) for row in tests_data]
+            tests=[]
+            for row in tests_data:
+                with open(row.test_result_image,'rb') as img:
+                    test_result_image = img.read()
+                    tests.append([row.test_id, row.procedure_name,row.test_result,test_result_image.decode('latin1')])
             response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments,'tests':tests}
             return Response(response,status=status.HTTP_200_OK)
         
