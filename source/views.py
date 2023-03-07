@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.core.files.storage import FileSystemStorage
 from rest_framework import status
-from rest_framework import permissions
+from django.conf import settings
+import os
 from django.db import connection
 from .models import *
 from .serializers import *
@@ -559,13 +559,20 @@ class Clerk_Functions(APIView):
             data={
                 'test_id':request.data.get('test_id'),
                 'test_result':request.data.get('test_result'),
-                'test_result_image':request.FILES['test_result_image'].read()
+                'test_result_image':os.path.join(settings.MEDIA_ROOT,'test_result_images/',request.FILES['test_result_image'].name)
             }
+            with open(data['test_result_image'], 'wb+') as destination:
+                for chunk in request.FILES['test_result_image'].chunks():
+                    destination.write(chunk)
+
             with connection.cursor() as cursor:
-                cursor.execute("UPDATE Test SET saved_test_result=True,test_result=%s,test_result_image=%s WHERE test_id=%s",[data['test_result'],data['test_result_image'],data['test_id']])
-                success=True
-                response={'success':success,'errorMessage':error_message}
-                return Response(response,status=status.HTTP_200_OK)
+                if(cursor.execute("UPDATE Test SET saved_test_result=True,test_result=%s,test_result_image=%s WHERE test_id=%s",[data['test_result'],data['test_result_image'],data['test_id']])==0):
+                    success=False
+                    error_message="Unable to upload image"
+                else:
+                    success=True
+            response={'success':success,'errorMessage':error_message}
+            return Response(response,status=status.HTTP_200_OK)
             
         else:
             success=False
@@ -608,10 +615,12 @@ class Doctor_Functions(APIView):
             rooms = Admitted.objects.raw('SELECT * from Admitted WHERE patient_id=%s AND currently_admitted=True',[request.GET.get('patient_id')])
             if(len(rooms) > 0):
                 room = rooms[0].room_id
+            
             treatments_data = Treatment.objects.raw('SELECT * FROM Treatment WHERE patient_id=%s AND doctor_username= BINARY %s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])   
             treatments = [(row.treatment_id, row.prescription) for row in treatments_data]
+            
             tests_data=Test.objects.raw('SELECT * FROM Test WHERE patient_id=%s AND doctor_username= BINARY %s', [request.GET.get('patient_id'),request.GET.get('doctor_username')])
-            tests = [(row.test_id, row.procedure_name) for row in tests_data]
+            tests = [(row.test_id, row.procedure_name,row.test_result,row.test_result_image) for row in tests_data]
             response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments,'tests':tests}
             return Response(response,status=status.HTTP_200_OK)
         

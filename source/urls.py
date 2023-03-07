@@ -1,6 +1,8 @@
 # from django.conf.urls import re_path
 from django.urls import path, include
 from .views import *
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('login/',LoginApiView.as_view()),
@@ -10,3 +12,5 @@ urlpatterns = [
     path('clerk/<str:method>/',Clerk_Functions.as_view()),
     path('profile/<str:usertype>/',ProfileView.as_view())
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

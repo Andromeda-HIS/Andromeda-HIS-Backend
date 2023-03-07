@@ -90,6 +90,6 @@ class Test(models.Model):
     date=models.DateField(null=True)
     saved_test_result=models.BooleanField()
     test_result=models.TextField(null=True)
-    test_result_image=models.ImageField(upload_to='test_result_images/',null=True)
+    test_result_image=models.TextField(null=True)
     class Meta:
         db_table='Test'
