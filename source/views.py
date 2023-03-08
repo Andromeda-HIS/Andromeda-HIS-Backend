@@ -669,10 +669,11 @@ class Doctor_Functions(APIView):
                 'doctor_username': request.data.get('doctor_username'),
                 'procedure_name': request.data.get('procedure_name'),
                 'appointment_id': request.data.get('appointment_id'),
-                'saved_test': False
+                'saved_test': False,
+                'saved_test_result':False
             }
             serializerTreatment = TreatmentSerializer(data=dataTreatment)
-            if not serializerTreatment.is_valid():
+            if not serializerTreatment.is_valid(): 
                 success=False
                 error_message="Unable to register treatment"
                 response={'success':success,'errorMessage':error_message}
