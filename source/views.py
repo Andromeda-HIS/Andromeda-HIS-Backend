@@ -626,7 +626,7 @@ class Doctor_Functions(APIView):
                 if(row.test_result_image is not None):
                     with open(row.test_result_image,'rb') as img:
                         test_result_image = img.read()
-                    tests.append([row.test_id, row.procedure_name,row.test_result,test_result_image.decode('latin1')])
+                    tests.append([row.test_id, row.procedure_name,row.test_result,test_result_image.decode('utf-8')])
                 else:
                     tests.append([row.test_id, row.procedure_name,row.test_result,test_result_image])
             response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments,'tests':tests}
