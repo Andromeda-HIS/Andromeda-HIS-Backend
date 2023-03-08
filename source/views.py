@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+import base64
 from django.conf import settings
 import os
 from django.db import connection
@@ -626,7 +627,8 @@ class Doctor_Functions(APIView):
                 if(row.test_result_image is not None):
                     with open(row.test_result_image,'rb') as img:
                         test_result_image = img.read()
-                    tests.append([row.test_id, row.procedure_name,row.test_result,test_result_image.decode('utf-8')])
+                    encoded_image=base64.b64encode(test_result_image)
+                    tests.append([row.test_id, row.procedure_name,row.test_result,encoded_image.decode('utf-8')])
                 else:
                     tests.append([row.test_id, row.procedure_name,row.test_result,test_result_image])
             response={'success':success,'errorMessage':error_message,'patient_name':patient.patient_name,'patient_address':patient.patient_address,'admitted':patient.admitted,'room':room,'treatments':treatments,'tests':tests}
