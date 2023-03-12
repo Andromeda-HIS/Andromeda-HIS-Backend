@@ -7,6 +7,8 @@ import os
 from django.db import connection
 from .models import *
 from .serializers import *
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
 
 class LoginApiView(APIView):
     def get(self, request, *args, **kwargs):
@@ -21,7 +23,7 @@ class LoginApiView(APIView):
             admins = Admin.objects.raw("SELECT * FROM Admin WHERE admin_username= BINARY %s",[data['userName']])
             if len(admins)>0:
                 admin=admins[0]
-                if(admin.admin_password==data['password']):
+                if(check_password(data['password'],admin.admin_password)):
                     success=True
                 else:
                     success=False
@@ -36,7 +38,7 @@ class LoginApiView(APIView):
             deos = Data_Entry_Operator.objects.raw("SELECT * FROM Data_Entry_Operator WHERE deo_username= BINARY %s",[data['userName']])
             if len(deos)>0:
                 deo=deos[0]
-                if(deo.deo_password==data['password']):
+                if(check_password(data['password'],deo.deo_password)):
                     success=True
                 else:
                     success=False
@@ -51,7 +53,7 @@ class LoginApiView(APIView):
             doctors = Doctor.objects.raw("SELECT * FROM Doctor WHERE doctor_username= BINARY %s",[data['userName']])
             if len(doctors)>0:
                 doctor=doctors[0]
-                if(doctor.doctor_password==data['password']):
+                if(check_password(data['password'],doctor.doctor_password)):
                     success=True
                 else:
                     success=False
@@ -66,7 +68,7 @@ class LoginApiView(APIView):
             fdos = Front_Desk_Operator.objects.raw("SELECT * FROM Front_Desk_Operator WHERE fdo_username= BINARY %s",[data['userName']])
             if len(fdos)>0:
                 fdo=fdos[0]
-                if(fdo.fdo_password==data['password']):
+                if(check_password(data['password'],fdo.fdo_password)):
                     success=True
                 else:
                     success=False
@@ -164,7 +166,7 @@ class Admin_Functions(APIView):
         if(request.data.get('designation')=='Admin'):
             data = { 
                 'admin_username': request.data.get('username'), 
-                'admin_password': request.data.get('password'),
+                'admin_password': make_password(request.data.get('password')),
                 'admin_name':request.data.get('name'),
                 'admin_address':request.data.get('address')
             }
@@ -183,7 +185,7 @@ class Admin_Functions(APIView):
         elif(request.data.get('designation')=='Doctor'):
             data = { 
                 'doctor_username': request.data.get('username'), 
-                'doctor_password': request.data.get('password'),
+                'doctor_password': make_password(request.data.get('password')),
                 'doctor_name':request.data.get('name'),
                 'doctor_address':request.data.get('address'),
                 'department':request.data.get('department')
@@ -201,7 +203,7 @@ class Admin_Functions(APIView):
         elif(request.data.get('designation')=='Clerk'):
             data = { 
                 'deo_username': request.data.get('username'), 
-                'deo_password': request.data.get('password'),
+                'deo_password': make_password(request.data.get('password')),
                 'deo_name':request.data.get('name'),
                 'deo_address':request.data.get('address')
             }
@@ -220,7 +222,7 @@ class Admin_Functions(APIView):
         elif(request.data.get('designation')=='Receptionist'):
             data = { 
                 'fdo_username': request.data.get('username'), 
-                'fdo_password': request.data.get('password'),
+                'fdo_password': make_password(request.data.get('password')),
                 'fdo_name':request.data.get('name'),
                 'fdo_address':request.data.get('address')
             }
